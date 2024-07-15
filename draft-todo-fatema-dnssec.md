@@ -1,6 +1,5 @@
 ---
 title: "Zone Hopping: A method to prevent zone-walking in DNSSEC"
-abbrev: "TODO - Abbreviation"
 category: info
 
 docname: draft-todo-fatema-dnssec-latest
