@@ -95,7 +95,7 @@ To show how ZH is implemented, let's take an example zone called "gotpcap.com". 
 
 First, create a public zone-file with records and signed it using the Zone Signing Key (ZSK). The resulted signed zone is as follows. Note that the records in the zone files shown below are truncated for the better readability.
 
-\\\
+```
 ; gotpcap.signed.db.public
 ; File written on Tue Mar 12 17:52:50 2024
 ; dnssec_signzone version 9.18.18
@@ -115,11 +115,11 @@ z.gotpcap.com.
             604800  RRSIG   A 13 3 604800 
             604800  NSEC    gotpcap.com.
             604800  RRSIG   NSEC 13 3 604800
-\\\
+```
 
 Next, create a sensitive zone-file with all sensitive records, and again signed it with the same ZSK. The resulted signed zone is as follows.
 
-\\\
+```
 ; gotpcap.signed.db.sensitive
 ; File written on Tue Mar 12 18:06:31 2024
 ; dnssec_signzone version 9.18.18
@@ -134,11 +134,11 @@ c-sensitive.gotpcap.com.
             604800  RRSIG   A 13 3 604800 
             604800  NSEC    gotpcap.com.
             604800  RRSIG   NSEC 13 3 604800
-\\\
+```
 
 Then delete all NSEC records from the signed sensitive zone-file and combine the resulting zone-file with the signed public zone-file. The final signed zone is as follows.
 
-\\\
+```
 ; gotpcap.signed.db.final
 ; File written on Tue Mar 12 18:06:31 2024
 ; dnssec_signzone version 9.18.18
@@ -172,7 +172,7 @@ z.gotpcap.com.
             604800  RRSIG   A 13 3 604800 
             604800  NSEC    gotpcap.com.
             604800  RRSIG   NSEC 13 3 604800
-\\\
+```
 
 With this final zone-file, the sensitive FQDNs are not longer discovered via zone-walking, as no NSEC records are available for them, but they do have valid signatures in RRSIG records to validate the authenticity of the records. The queries for a non-existent domain between dns.gotpcap.com. and z.gotpcap.com. will get the same NSEC response of:
 
