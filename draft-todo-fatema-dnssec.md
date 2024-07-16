@@ -139,9 +139,9 @@ c-sensitive.gotpcap.com.
 Then delete all NSEC records from the signed sensitive zone-file and combine the resulting zone-file with the signed public zone-file. The final signed zone is as follows.
 
 ```
-; gotpcap.signed.db.final\n
-; File written on Tue Mar 12 18:06:31 2024\n
-; dnssec_signzone version 9.18.18\n
+; gotpcap.signed.db.final
+; File written on Tue Mar 12 18:06:31 2024
+; dnssec_signzone version 9.18.18
 gotpcap.com.
             604800  IN SOA  gotpcap.com.
             604800  RRSIG   SOA 13 2 604800
@@ -189,9 +189,9 @@ Combining the solution described above with the other available solutions, we ha
 • ZH allows zone walking only on public FQDNs and protects against denial of existence attacks on these public FQDNs. For sensitive FQDNs, zone walking is not possible and denial of existence is possible. Moreover, the ZH is not especially vulnerable to DoS attacks.
 
 ## IPv6 Address Discovery
-For IPv6 networks, zone-walking is a critical tool for reconnaissance. According to the Office of Management and Budget (OMB) memorandum M-21-07, issued in Nov. 2020, the Federal government plans to transition to IPv6 only networks by 2025. An important benefit of IPv6 is that network reconnaissance through scanning is infeasible since the address space is so large that scanning takes too long unless massive network traffic is generated, which is easily detected. For instance, the private address range is fc00::/7, allowing private addresses to be dispersed randomly within an address space of 2121 addresses. However, zone walking provides effective way to find all named hosts. Therefore, disabling zone walking will disable a crucial tool employed in malicious IPv6 network reconnaissance.
+For IPv6 networks, zone-walking is a critical tool for reconnaissance. According to the Office of Management and Budget (OMB) memorandum M-21-07, issued in Nov. 2020, the Federal government plans to transition to IPv6 only networks by 2025. An important benefit of IPv6 is that network reconnaissance through scanning is infeasible since the address space is so large that scanning takes too long unless massive network traffic is generated, which is easily detected. For instance, the private address range is fc00::/7, allowing private addresses to be dispersed randomly within an address space of 2^121 addresses. However, zone walking provides effective way to find all named hosts. Therefore, disabling zone walking will disable a crucial tool employed in malicious IPv6 network reconnaissance.
 
-## ZH VS. Split-view DNSSEC
+## ZH vs.Split-view DNSSEC
 Zone walking can expose FQDNs from a private network to the public Internet. This vulnerability can be mitigated by using the Split-View DNS architecture, where a private DNS server is used to protect internal domains from being leaked to the public Internet. While this architecture addresses some aspects of the risks associated with zone walking, it does not entirely eliminate them. Specifically, even with a split-view DNS architecture, an external attacker can quickly discover all publicly facing servers and, upon gaining access to the private network, the attacker can efficiently discover internal servers, which facilitates lateral movement within the network, and doesn't really fit into the zero-trust model which explains the blurring line between what is considered non-trusted (External) and trusted (internal) network.
 
 # IANA Considerations
