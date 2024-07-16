@@ -33,7 +33,7 @@ author:
     fullname: Stephan K Bohacek
     organization: University of Delaware
     email: bohacek@udel.edu
- -  
+ -
     ins: N. Buraglio
     fullname: Nick Buraglio
     organization: Energy Sciences Network
@@ -57,7 +57,7 @@ DNS Security Extension (DNSSEC) as defined by [RFC9364] was developed to address
 
 # Introduction
 
-DNSSEC introduced the concept of authenticated denial of existence (referred as DoE from now on), where it proved that a negative response actually came from the authoritative server and not from an attacker. DNSSEC uses NSEC [RFC3845] or NSEC3 [RFC5155] records to provide authenticaled DoE protection where the domains or the hashes of the domains that encapsulates the queried domain is returned. The need to offer authenticated DoE as part of DNSSEC protocol protection coverage, opened up the protocol to an information leak problem, called zone-walking, in which an adversary can intentianally query non-existent domains and enumerate the complete zone from the owner names disclosed by the NSEC records. There are many tools available to easily enumerate the contents of a signed-zone, the result of which is similar to the result of a zone transfer process, which interestingly is not allowed from external sources. 
+DNSSEC introduced the concept of authenticated denial of existence (referred as DoE from now on), where it proved that a negative response actually came from the authoritative server and not from an attacker. DNSSEC uses NSEC [RFC3845] or NSEC3 [RFC5155] records to provide authenticaled DoE protection where the domains or the hashes of the domains that encapsulates the queried domain is returned. The need to offer authenticated DoE as part of DNSSEC protocol protection coverage, opened up the protocol to an information leak problem, called zone-walking, in which an adversary can intentianally query non-existent domains and enumerate the complete zone from the owner names disclosed by the NSEC records. There are many tools available to easily enumerate the contents of a signed-zone, the result of which is similar to the result of a zone transfer process, which interestingly is not allowed from external sources.
 
 [RFC4470] was introduced, in early 2006, to solve the zone walking problem. This RFC introduced the concept of ”Minimally Covering NSEC Records and DNSSEC Online Signing”, which describes a way to construct DNSSEC NSEC resource records that cover a smaller range of names. According to the RFC - ”Whenever an NSEC record is needed to prove the non-existence of a name, a new NSEC record is dynamically produced and signed. The new NSEC record has an owner name lexically before the QNAME (queried name) but lexically following any existing name and a ”next name” lexically following the QNAME but before any existing name.” The new NSEC record hence generated would still cover the non-existent query, but with the fake previous-name and the next name, effectively preventing the disclosure of zone contents. There were two adaptations found that were based on [RFC4470] - NSEC3 White lies and Black lies.
 
@@ -79,7 +79,7 @@ Black Lies (BL): Black Lies (BL), described in an RFC Internet draft in 2016, is
 
 
 # Practical Considerations:
-[RFC5155] NSEC3 record type was introduced in RFC 5155, that is implemented to prevent clear text retrieval of FQDNs, instead the hashed versions are returned. That wasn't found to be too useful, as most of the hashes suffer collision attacks and since most FQDNs strings are siple and predictable, it became easy to create rainbow tables and do offline cracking of the hashed domains. 
+[RFC5155] NSEC3 record type was introduced in RFC 5155, that is implemented to prevent clear text retrieval of FQDNs, instead the hashed versions are returned. That wasn't found to be too useful, as most of the hashes suffer collision attacks and since most FQDNs strings are siple and predictable, it became easy to create rainbow tables and do offline cracking of the hashed domains.
 
 [RFC4470] As described in introduction the initial method to prevent zone-walking was introduced in RFC 4470, which has two practical implementations - NSEC3 White lies and Black lies (see the definitions section for the explanation).
 
@@ -102,17 +102,17 @@ First, create a public zone-file with records and signed it using the Zone Signi
 ; NOT SHOWING SOA AS IT IS SAME IN ALL
 a.gotpcap.com.
             604800  IN A    192.168.2.3
-            604800  RRSIG   A 13 3 604800 
+            604800  RRSIG   A 13 3 604800
             604800  NSEC    dns.gotpcap.com.
-            604800  RRSIG   NSEC 13 3 604800  
-dns.gotpcap.com. 
+            604800  RRSIG   NSEC 13 3 604800
+dns.gotpcap.com.
             604800  IN A    34.125.87.209
-            604800  RRSIG   A 13 3 604800 
+            604800  RRSIG   A 13 3 604800
             604800  NSEC    z.gotpcap.com.
-            604800  RRSIG   NSEC 13 3 604800  
-z.gotpcap.com. 
+            604800  RRSIG   NSEC 13 3 604800
+z.gotpcap.com.
             604800  IN A    192.168.2.4
-            604800  RRSIG   A 13 3 604800 
+            604800  RRSIG   A 13 3 604800
             604800  NSEC    gotpcap.com.
             604800  RRSIG   NSEC 13 3 604800
 ```
@@ -124,14 +124,14 @@ Next, create a sensitive zone-file with all sensitive records, and again signed 
 ; File written on Tue Mar 12 18:06:31 2024
 ; dnssec_signzone version 9.18.18
 ; NOT SHOWING SOA Record
-b-sensitive.gotpcap.com. 
+b-sensitive.gotpcap.com.
             604800  IN A   10.10.0.1
-            604800  RRSIG   A 13 3 604800 
+            604800  RRSIG   A 13 3 604800
             604800  NSEC    c-sensitive.gotpcap.com.
-            604800  RRSIG   NSEC 13 3 604800 
-c-sensitive.gotpcap.com. 
+            604800  RRSIG   NSEC 13 3 604800
+c-sensitive.gotpcap.com.
             604800  IN A   10.10.0.2
-            604800  RRSIG   A 13 3 604800 
+            604800  RRSIG   A 13 3 604800
             604800  NSEC    gotpcap.com.
             604800  RRSIG   NSEC 13 3 604800
 ```
@@ -143,33 +143,33 @@ Then delete all NSEC records from the signed sensitive zone-file and combine the
 ; File written on Tue Mar 12 18:06:31 2024
 ; dnssec_signzone version 9.18.18
 gotpcap.com.
-            604800  IN SOA  gotpcap.com.               
-            604800  RRSIG   SOA 13 2 604800 
+            604800  IN SOA  gotpcap.com.
+            604800  RRSIG   SOA 13 2 604800
             604800  NS      dns.gotpcap.com.
-            604800  RRSIG   NS 13 2 604800 
+            604800  RRSIG   NS 13 2 604800
             604800  NSEC    a.gotpcap.com.
-            604800  RRSIG   NSEC 13 2 604800 
+            604800  RRSIG   NSEC 13 2 604800
             604800  DNSKEY  257 3 13 xS9zESD
-            604800  RRSIG   DNSKEY 13 2 604800 
-a.gotpcap.com.         
+            604800  RRSIG   DNSKEY 13 2 604800
+a.gotpcap.com.
             604800  IN A    192.168.2.3
-            604800  RRSIG   A 13 3 604800 
+            604800  RRSIG   A 13 3 604800
             604800  NSEC    dns.gotpcap.com.
-            604800  RRSIG   NSEC 13 3 604800 
-dns.gotpcap.com.      
+            604800  RRSIG   NSEC 13 3 604800
+dns.gotpcap.com.
             604800  IN A    34.125.87.209
-            604800  RRSIG   A 13 3 604800 
+            604800  RRSIG   A 13 3 604800
             604800  NSEC    z.gotpcap.com.
-            604800  RRSIG   NSEC 13 3 604800 
-b-sensitive.gotpcap.com. 
+            604800  RRSIG   NSEC 13 3 604800
+b-sensitive.gotpcap.com.
             604800  IN A    10.10.0.1
-            604800  RRSIG   A 13 3 604800 
-c-sensitive.gotpcap.com. 
+            604800  RRSIG   A 13 3 604800
+c-sensitive.gotpcap.com.
             604800  IN A    10.10.0.2
-            604800  RRSIG   A 13 3 604800 
-z.gotpcap.com.         
+            604800  RRSIG   A 13 3 604800
+z.gotpcap.com.
             604800  IN A    192.168.2.4
-            604800  RRSIG   A 13 3 604800 
+            604800  RRSIG   A 13 3 604800
             604800  NSEC    gotpcap.com.
             604800  RRSIG   NSEC 13 3 604800
 ```
