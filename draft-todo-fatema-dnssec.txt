@@ -368,7 +368,7 @@ Table of Contents
    internal servers, which facilitates lateral movement within the
    network, and doesn't really fit into the zero-trust model which
    explains the blurring line between what is considered non-trusted
-   (Internet) and trusted (internal) network.
+   (External) and trusted (internal) network.
 
 7.  IANA Considerations
 
