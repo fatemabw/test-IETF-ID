@@ -82,7 +82,7 @@ Table of Contents
    5.  Exmaple of ZH
    6.  Security Considerations of ZH
      6.1.  IPv6 Address Discovery
-     6.2.  ZH VS.  Split-view DNSSEC
+     6.2.  ZH vs.Split-view DNSSEC
    7.  IANA Considerations
    8.  References
      8.1.  Normative References
@@ -288,20 +288,19 @@ Table of Contents
    combine the resulting zone-file with the signed public zone-file.
    The final signed zone is as follows.
 
-   ; gotpcap.signed.db.final\n ; File written on Tue Mar 12 18:06:31
-   2024\n ; dnssec_signzone version 9.18.18\n gotpcap.com.  604800 IN
-   SOA gotpcap.com.  604800 RRSIG SOA 13 2 604800 604800 NS
-   dns.gotpcap.com.  604800 RRSIG NS 13 2 604800 604800 NSEC
-   a.gotpcap.com.  604800 RRSIG NSEC 13 2 604800 604800 DNSKEY 257 3 13
-   xS9zESD 604800 RRSIG DNSKEY 13 2 604800 a.gotpcap.com.  604800 IN A
-   192.168.2.3 604800 RRSIG A 13 3 604800 604800 NSEC dns.gotpcap.com.
-   604800 RRSIG NSEC 13 3 604800 dns.gotpcap.com.  604800 IN A
-   34.125.87.209 604800 RRSIG A 13 3 604800 604800 NSEC z.gotpcap.com.
-   604800 RRSIG NSEC 13 3 604800 b-sensitive.gotpcap.com.  604800 IN A
-   10.10.0.1 604800 RRSIG A 13 3 604800 c-sensitive.gotpcap.com.  604800
-   IN A 10.10.0.2 604800 RRSIG A 13 3 604800 z.gotpcap.com.  604800 IN A
-   192.168.2.4 604800 RRSIG A 13 3 604800 604800 NSEC gotpcap.com.
-   604800 RRSIG NSEC 13 3 604800
+   ; gotpcap.signed.db.final ; File written on Tue Mar 12 18:06:31 2024
+   ; dnssec_signzone version 9.18.18 gotpcap.com.  604800 IN SOA
+   gotpcap.com.  604800 RRSIG SOA 13 2 604800 604800 NS dns.gotpcap.com.
+   604800 RRSIG NS 13 2 604800 604800 NSEC a.gotpcap.com.  604800 RRSIG
+   NSEC 13 2 604800 604800 DNSKEY 257 3 13 xS9zESD 604800 RRSIG DNSKEY
+   13 2 604800 a.gotpcap.com.  604800 IN A 192.168.2.3 604800 RRSIG A 13
+   3 604800 604800 NSEC dns.gotpcap.com.  604800 RRSIG NSEC 13 3 604800
+   dns.gotpcap.com.  604800 IN A 34.125.87.209 604800 RRSIG A 13 3
+   604800 604800 NSEC z.gotpcap.com.  604800 RRSIG NSEC 13 3 604800
+   b-sensitive.gotpcap.com.  604800 IN A 10.10.0.1 604800 RRSIG A 13 3
+   604800 c-sensitive.gotpcap.com.  604800 IN A 10.10.0.2 604800 RRSIG A
+   13 3 604800 z.gotpcap.com.  604800 IN A 192.168.2.4 604800 RRSIG A 13
+   3 604800 604800 NSEC gotpcap.com.  604800 RRSIG NSEC 13 3 604800
 
    With this final zone-file, the sensitive FQDNs are not longer
    discovered via zone-walking, as no NSEC records are available for
@@ -350,12 +349,12 @@ Table of Contents
    too long unless massive network traffic is generated, which is easily
    detected.  For instance, the private address range is fc00::/7,
    allowing private addresses to be dispersed randomly within an address
-   space of 2121 addresses.  However, zone walking provides effective
+   space of 2^121 addresses.  However, zone walking provides effective
    way to find all named hosts.  Therefore, disabling zone walking will
    disable a crucial tool employed in malicious IPv6 network
    reconnaissance.
 
-6.2.  ZH VS.  Split-view DNSSEC
+6.2.  ZH vs.Split-view DNSSEC
 
    Zone walking can expose FQDNs from a private network to the public
    Internet.  This vulnerability can be mitigated by using the Split-

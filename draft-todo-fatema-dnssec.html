@@ -1158,7 +1158,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-ipv6-address-discovery" class="internal xref">IPv6 Address Discovery</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-zh-vs-split-view-dnssec" class="internal xref">ZH VS. Split-view DNSSEC</a></p>
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-zh-vssplit-view-dnssec" class="internal xref">ZH vs.Split-view DNSSEC</a></p>
 </li>
             </ul>
 </li>
@@ -1278,9 +1278,9 @@ c-sensitive.gotpcap.com.
 </code><a href="#section-5-5" class="pilcrow">¶</a></p>
 <p id="section-5-6">Then delete all NSEC records from the signed sensitive zone-file and combine the resulting zone-file with the signed public zone-file. The final signed zone is as follows.<a href="#section-5-6" class="pilcrow">¶</a></p>
 <p id="section-5-7"><code>
-; gotpcap.signed.db.final\n
-; File written on Tue Mar 12 18:06:31 2024\n
-; dnssec_signzone version 9.18.18\n
+; gotpcap.signed.db.final
+; File written on Tue Mar 12 18:06:31 2024
+; dnssec_signzone version 9.18.18
 gotpcap.com.
             604800  IN SOA  gotpcap.com.
             604800  RRSIG   SOA 13 2 604800
@@ -1332,13 +1332,13 @@ z.gotpcap.com.
         <h3 id="name-ipv6-address-discovery">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-ipv6-address-discovery" class="section-name selfRef">IPv6 Address Discovery</a>
         </h3>
-<p id="section-6.1-1">For IPv6 networks, zone-walking is a critical tool for reconnaissance. According to the Office of Management and Budget (OMB) memorandum M-21-07, issued in Nov. 2020, the Federal government plans to transition to IPv6 only networks by 2025. An important benefit of IPv6 is that network reconnaissance through scanning is infeasible since the address space is so large that scanning takes too long unless massive network traffic is generated, which is easily detected. For instance, the private address range is fc00::/7, allowing private addresses to be dispersed randomly within an address space of 2121 addresses. However, zone walking provides effective way to find all named hosts. Therefore, disabling zone walking will disable a crucial tool employed in malicious IPv6 network reconnaissance.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-1">For IPv6 networks, zone-walking is a critical tool for reconnaissance. According to the Office of Management and Budget (OMB) memorandum M-21-07, issued in Nov. 2020, the Federal government plans to transition to IPv6 only networks by 2025. An important benefit of IPv6 is that network reconnaissance through scanning is infeasible since the address space is so large that scanning takes too long unless massive network traffic is generated, which is easily detected. For instance, the private address range is fc00::/7, allowing private addresses to be dispersed randomly within an address space of 2^121 addresses. However, zone walking provides effective way to find all named hosts. Therefore, disabling zone walking will disable a crucial tool employed in malicious IPv6 network reconnaissance.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="zh-vs-split-view-dnssec">
+<div id="zh-vssplit-view-dnssec">
 <section id="section-6.2">
-        <h3 id="name-zh-vs-split-view-dnssec">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-zh-vs-split-view-dnssec" class="section-name selfRef">ZH VS. Split-view DNSSEC</a>
+        <h3 id="name-zh-vssplit-view-dnssec">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-zh-vssplit-view-dnssec" class="section-name selfRef">ZH vs.Split-view DNSSEC</a>
         </h3>
 <p id="section-6.2-1">Zone walking can expose FQDNs from a private network to the public Internet. This vulnerability can be mitigated by using the Split-View DNS architecture, where a private DNS server is used to protect internal domains from being leaked to the public Internet. While this architecture addresses some aspects of the risks associated with zone walking, it does not entirely eliminate them. Specifically, even with a split-view DNS architecture, an external attacker can quickly discover all publicly facing servers and, upon gaining access to the private network, the attacker can efficiently discover internal servers, which facilitates lateral movement within the network, and doesn't really fit into the zero-trust model which explains the blurring line between what is considered non-trusted (External) and trusted (internal) network.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
 </section>
