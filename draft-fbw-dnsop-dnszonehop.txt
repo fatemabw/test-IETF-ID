@@ -5,14 +5,14 @@
 DNSOP Working Group                                              F. Wala
 Internet-Draft                                   Energy Sciences Network
 Intended status: Informational                                S. Bohacek
-Expires: 17 January 2025                          University of Delaware
+Expires: 18 January 2025                          University of Delaware
                                                              N. Buraglio
                                                  Energy Sciences Network
-                                                            16 July 2024
+                                                            17 July 2024
 
 
         Zone Hopping: A method to prevent zone-walking in DNSSEC
-                    draft-todo-fatema-dnssec-latest
+                   draft-fbw-dnsop-dnszonehop-latest
 
 Abstract
 
@@ -21,10 +21,11 @@ Abstract
    certain circumstances, information leakage may be possible stemming
    from a known DNSSEC vulnerability that facilitates a process known as
    zone walking, which enables the efficient collection of all FQDNs
-   from a given environment.  This document provides a solution, called
-   Zone-Hopping, to address the domain information leakage via Zone-
-   walking meanwhile preserving the integrity of the records for which
-   DNSSEC was originally introduced.
+   from a given environment.  This document describes the problem space
+   as outlined in [IEEE-ZoneHopping] and offers a potential solution,
+   called Zone-Hopping, to aid in addressing the domain information
+   leakage capable via Zone-walking while preserving the integrity of
+   the records for which DNSSEC was originally introduced.
 
 About This Document
 
@@ -33,7 +34,7 @@ About This Document
    The latest revision of this draft can be found at
    https://github.com/fatemabw/test-IETF-ID.  Status information for
    this document may be found at https://datatracker.ietf.org/doc/draft-
-   todo-fatema-dnssec/.
+   fbw-dnsop-dnszonehop/.
 
    Discussion of this document takes place on the WG Working Group
    mailing list (mailto:WG@example.com), which is archived at
@@ -57,7 +58,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 January 2025.
+   This Internet-Draft will expire on 18 January 2025.
 
 Copyright Notice
 
@@ -76,17 +77,18 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
-   2.  Conventions and Definitions
-   3.  Practical Considerations:
-   4.  Zone Hopping (ZH)
-   5.  Exmaple of ZH
-   6.  Security Considerations of ZH
-     6.1.  IPv6 Address Discovery
-     6.2.  ZH vs.Split-view DNSSEC
-   7.  IANA Considerations
-   8.  References
-     8.1.  Normative References
-     8.2.  Informative References
+   2.  Overview
+   3.  Conventions and Definitions
+   4.  Practical Considerations:
+   5.  Zone Hopping (ZH)
+   6.  Exmaple of ZH
+   7.  Security Considerations of ZH
+     7.1.  IPv6 Address Discovery
+     7.2.  ZH vs.Split-view DNSSEC
+   8.  IANA Considerations
+   9.  References
+     9.1.  Normative References
+     9.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -96,31 +98,34 @@ Table of Contents
    (referred as DoE from now on), where it proved that a negative
    response actually came from the authoritative server and not from an
    attacker.  DNSSEC uses NSEC [RFC3845] or NSEC3 [RFC5155] records to
-   provide authenticaled DoE protection where the domains or the hashes
+   provide authenticated DoE protection where the domains or the hashes
    of the domains that encapsulates the queried domain is returned.  The
    need to offer authenticated DoE as part of DNSSEC protocol protection
    coverage, opened up the protocol to an information leak problem,
-   called zone-walking, in which an adversary can intentianally query
+   called zone-walking, in which an adversary can intentionally query
    non-existent domains and enumerate the complete zone from the owner
    names disclosed by the NSEC records.  There are many tools available
    to easily enumerate the contents of a signed-zone, the result of
    which is similar to the result of a zone transfer process, which
    interestingly is not allowed from external sources.
 
+2.  Overview
+
    [RFC4470] was introduced, in early 2006, to solve the zone walking
    problem.  This RFC introduced the concept of ”Minimally Covering NSEC
    Records and DNSSEC Online Signing”, which describes a way to
    construct DNSSEC NSEC resource records that cover a smaller range of
-   names.  According to the RFC - ”Whenever an NSEC record is needed to
-   prove the non-existence of a name, a new NSEC record is dynamically
-   produced and signed.  The new NSEC record has an owner name lexically
-   before the QNAME (queried name) but lexically following any existing
-   name and a ”next name” lexically following the QNAME but before any
-   existing name.” The new NSEC record hence generated would still cover
-   the non-existent query, but with the fake previous-name and the next
-   name, effectively preventing the disclosure of zone contents.  There
-   were two adaptations found that were based on [RFC4470] - NSEC3 White
-   lies and Black lies.
+   names.  According to the RFC:
+
+Whenever an NSEC record is needed to prove the non-existence of a name, a new NSEC record is dynamically produced and signed.
+The new NSEC record has an owner name lexically before the QNAME (queried name) but lexically following any existing name and a
+”next name” lexically following the QNAME but before any existing name.
+
+   The new NSEC record hence generated would still cover the non-
+   existent query, but with the fake previous-name and the next name,
+   effectively preventing the disclosure of zone contents.  There were
+   two adaptations found that were based on [RFC4470] - NSEC3 White lies
+   and Black lies.
 
    As mentioned in RFC 4470 section 5, there are some security risks
    associated with the methods described above.  First, in order to sign
@@ -149,7 +154,7 @@ Table of Contents
    corresponding RRSIGs) to provide integrity of the records classic
    DNSSEC protection.
 
-2.  Conventions and Definitions
+3.  Conventions and Definitions
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -205,13 +210,13 @@ Table of Contents
    mapping.  Consequently, this method is used by several DNS service
    providers such as Cloudflare and Amazon Route 53.
 
-3.  Practical Considerations:
+4.  Practical Considerations:
 
    [RFC5155] NSEC3 record type was introduced in RFC 5155, that is
    implemented to prevent clear text retrieval of FQDNs, instead the
    hashed versions are returned.  That wasn't found to be too useful, as
    most of the hashes suffer collision attacks and since most FQDNs
-   strings are siple and predictable, it became easy to create rainbow
+   strings are simple and predictable, it became easy to create rainbow
    tables and do offline cracking of the hashed domains.
 
    [RFC4470] As described in introduction the initial method to prevent
@@ -219,7 +224,7 @@ Table of Contents
    implementations - NSEC3 White lies and Black lies (see the
    definitions section for the explanation).
 
-4.  Zone Hopping (ZH)
+5.  Zone Hopping (ZH)
 
    The objective of this solution is to disable zone walking for
    specific FQDNs, while still allowing zone walking to find FQDNs that
@@ -253,7 +258,7 @@ Table of Contents
    first and last record.  It will effectively prevent zone-walking,
    i.e. no domain in the zone has NSEC records except the zone apex.
 
-5.  Exmaple of ZH
+6.  Exmaple of ZH
 
    To show how ZH is implemented, let's take an example zone called
    "gotpcap.com".  We registered this domain and use it for testing.
@@ -264,43 +269,82 @@ Table of Contents
    Note that the records in the zone files shown below are truncated for
    the better readability.
 
-   ; gotpcap.signed.db.public ; File written on Tue Mar 12 17:52:50 2024
-   ; dnssec_signzone version 9.18.18 ; NOT SHOWING SOA AS IT IS SAME IN
-   ALL a.gotpcap.com.  604800 IN A 192.168.2.3 604800 RRSIG A 13 3
-   604800 604800 NSEC dns.gotpcap.com.  604800 RRSIG NSEC 13 3 604800
-   dns.gotpcap.com.  604800 IN A 34.125.87.209 604800 RRSIG A 13 3
-   604800 604800 NSEC z.gotpcap.com.  604800 RRSIG NSEC 13 3 604800
-   z.gotpcap.com.  604800 IN A 192.168.2.4 604800 RRSIG A 13 3 604800
-   604800 NSEC gotpcap.com.  604800 RRSIG NSEC 13 3 604800
+   ; gotpcap.signed.db.public
+   ; File written on Tue Mar 12 17:52:50 2024
+   ; dnssec_signzone version 9.18.18
+   ; NOT SHOWING SOA AS IT IS SAME IN ALL
+   a.gotpcap.com.
+               604800  IN A    192.168.2.3
+               604800  RRSIG   A 13 3 604800
+               604800  NSEC    dns.gotpcap.com.
+               604800  RRSIG   NSEC 13 3 604800
+   dns.gotpcap.com.
+               604800  IN A    34.125.87.209
+               604800  RRSIG   A 13 3 604800
+               604800  NSEC    z.gotpcap.com.
+               604800  RRSIG   NSEC 13 3 604800
+   z.gotpcap.com.
+               604800  IN A    192.168.2.4
+               604800  RRSIG   A 13 3 604800
+               604800  NSEC    gotpcap.com.
+               604800  RRSIG   NSEC 13 3 604800
 
    Next, create a sensitive zone-file with all sensitive records, and
    again signed it with the same ZSK.  The resulted signed zone is as
    follows.
 
-   ; gotpcap.signed.db.sensitive ; File written on Tue Mar 12 18:06:31
-   2024 ; dnssec_signzone version 9.18.18 ; NOT SHOWING SOA Record
-   b-sensitive.gotpcap.com.  604800 IN A 10.10.0.1 604800 RRSIG A 13 3
-   604800 604800 NSEC c-sensitive.gotpcap.com.  604800 RRSIG NSEC 13 3
-   604800 c-sensitive.gotpcap.com.  604800 IN A 10.10.0.2 604800 RRSIG A
-   13 3 604800 604800 NSEC gotpcap.com.  604800 RRSIG NSEC 13 3 604800
+   ; gotpcap.signed.db.sensitive
+   ; File written on Tue Mar 12 18:06:31 2024
+   ; dnssec_signzone version 9.18.18
+   ; NOT SHOWING SOA Record
+   b-sensitive.gotpcap.com.
+               604800  IN A   10.10.0.1
+               604800  RRSIG   A 13 3 604800
+               604800  NSEC    c-sensitive.gotpcap.com.
+               604800  RRSIG   NSEC 13 3 604800
+   c-sensitive.gotpcap.com.
+               604800  IN A   10.10.0.2
+               604800  RRSIG   A 13 3 604800
+               604800  NSEC    gotpcap.com.
+               604800  RRSIG   NSEC 13 3 604800
 
    Then delete all NSEC records from the signed sensitive zone-file and
    combine the resulting zone-file with the signed public zone-file.
    The final signed zone is as follows.
 
-   ; gotpcap.signed.db.final ; File written on Tue Mar 12 18:06:31 2024
-   ; dnssec_signzone version 9.18.18 gotpcap.com.  604800 IN SOA
-   gotpcap.com.  604800 RRSIG SOA 13 2 604800 604800 NS dns.gotpcap.com.
-   604800 RRSIG NS 13 2 604800 604800 NSEC a.gotpcap.com.  604800 RRSIG
-   NSEC 13 2 604800 604800 DNSKEY 257 3 13 xS9zESD 604800 RRSIG DNSKEY
-   13 2 604800 a.gotpcap.com.  604800 IN A 192.168.2.3 604800 RRSIG A 13
-   3 604800 604800 NSEC dns.gotpcap.com.  604800 RRSIG NSEC 13 3 604800
-   dns.gotpcap.com.  604800 IN A 34.125.87.209 604800 RRSIG A 13 3
-   604800 604800 NSEC z.gotpcap.com.  604800 RRSIG NSEC 13 3 604800
-   b-sensitive.gotpcap.com.  604800 IN A 10.10.0.1 604800 RRSIG A 13 3
-   604800 c-sensitive.gotpcap.com.  604800 IN A 10.10.0.2 604800 RRSIG A
-   13 3 604800 z.gotpcap.com.  604800 IN A 192.168.2.4 604800 RRSIG A 13
-   3 604800 604800 NSEC gotpcap.com.  604800 RRSIG NSEC 13 3 604800
+   ; gotpcap.signed.db.final
+   ; File written on Tue Mar 12 18:06:31 2024
+   ; dnssec_signzone version 9.18.18
+   gotpcap.com.
+               604800  IN SOA  gotpcap.com.
+               604800  RRSIG   SOA 13 2 604800
+               604800  NS      dns.gotpcap.com.
+               604800  RRSIG   NS 13 2 604800
+               604800  NSEC    a.gotpcap.com.
+               604800  RRSIG   NSEC 13 2 604800
+               604800  DNSKEY  257 3 13 xS9zESD
+               604800  RRSIG   DNSKEY 13 2 604800
+   a.gotpcap.com.
+               604800  IN A    192.168.2.3
+               604800  RRSIG   A 13 3 604800
+               604800  NSEC    dns.gotpcap.com.
+               604800  RRSIG   NSEC 13 3 604800
+   dns.gotpcap.com.
+               604800  IN A    34.125.87.209
+               604800  RRSIG   A 13 3 604800
+               604800  NSEC    z.gotpcap.com.
+               604800  RRSIG   NSEC 13 3 604800
+   b-sensitive.gotpcap.com.
+               604800  IN A    10.10.0.1
+               604800  RRSIG   A 13 3 604800
+   c-sensitive.gotpcap.com.
+               604800  IN A    10.10.0.2
+               604800  RRSIG   A 13 3 604800
+   z.gotpcap.com.
+               604800  IN A    192.168.2.4
+               604800  RRSIG   A 13 3 604800
+               604800  NSEC    gotpcap.com.
+               604800  RRSIG   NSEC 13 3 604800
 
    With this final zone-file, the sensitive FQDNs are not longer
    discovered via zone-walking, as no NSEC records are available for
@@ -314,15 +358,15 @@ Table of Contents
    However, querying the sensitive FQDNs will generate a valid response
    from the name-server.
 
-6.  Security Considerations of ZH
+7.  Security Considerations of ZH
 
    The proposed method of ZH is susceptible to denial of existence
    attacks for sensitive FQDNs via record replay.  However, one could
    argue that DoE attacks have same impact as denial of service (DoS)
-   attacks.  And in reality DoS attack is much more convinient than
+   attacks.  And in reality DoS attack is much more convenient than
    pulling off a successful DoE, as it doesn't require MiTM of the
    queries requested by the client to forge a spoofed response that
-   could successfully deny the existance of a valid domain.  Hence, we
+   could successfully deny the existence of a valid domain.  Hence, we
    argue that there are far more better ways to DoS a DNS server than
    trying to DoS an individual resolver/client via a DoE attack.
 
@@ -338,7 +382,7 @@ Table of Contents
    not possible and denial of existence is possible.  Moreover, the ZH
    is not especially vulnerable to DoS attacks.
 
-6.1.  IPv6 Address Discovery
+7.1.  IPv6 Address Discovery
 
    For IPv6 networks, zone-walking is a critical tool for
    reconnaissance.  According to the Office of Management and Budget
@@ -354,7 +398,7 @@ Table of Contents
    disable a crucial tool employed in malicious IPv6 network
    reconnaissance.
 
-6.2.  ZH vs.Split-view DNSSEC
+7.2.  ZH vs.Split-view DNSSEC
 
    Zone walking can expose FQDNs from a private network to the public
    Internet.  This vulnerability can be mitigated by using the Split-
@@ -370,13 +414,13 @@ Table of Contents
    explains the blurring line between what is considered non-trusted
    (External) and trusted (internal) network.
 
-7.  IANA Considerations
+8.  IANA Considerations
 
    This document has no IANA actions.
 
-8.  References
+9.  References
 
-8.1.  Normative References
+9.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -387,13 +431,17 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-8.2.  Informative References
+9.2.  Informative References
 
    [IEEE-ZoneHopping]
               "Zone-Hopping: Sensitive Information Leakage Prevention
               for DNSSEC-NSEC", n.d.,
               <https://dsn2024uq.github.io/Proceedings/pdfs/DSN-
               S2024-3LLnxbOIgEGedw7VY2pz6a/957000a104/957000a104.pdf>.
+
+   [RFC3845]  Schlyter, J., Ed., "DNS Security (DNSSEC) NextSECure
+              (NSEC) RDATA Format", RFC 3845, DOI 10.17487/RFC3845,
+              August 2004, <https://www.rfc-editor.org/rfc/rfc3845>.
 
    [RFC4470]  Weiler, S. and J. Ihren, "Minimally Covering NSEC Records
               and DNSSEC On-line Signing", RFC 4470,
